@@ -71,8 +71,7 @@ def get(addresse = 'searchedaddress'):
             'Addresse': adresse1,
             'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Non"
         }
-        return jsonify({'Address':adresse1, 'Alea':"Non",'Niveau_Alea':0, "Exposition au retrait-gonflement des sols argileux : Non"}), 200
+        return jsonify({'Address':adresse1, 'Alea':"Non",'Niveau_Alea':0, 'AleaLabel':"Exposition au retrait-gonflement des sols argileux : Non"}), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
