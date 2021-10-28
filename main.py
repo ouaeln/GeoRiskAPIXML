@@ -65,13 +65,13 @@ def get(addresse = 'searchedaddress'):
     if len(returneddata.get('features')) > 0:
         ALEA = returneddata.get('features')[0].get('properties').get('ALEA')
         NIV = returneddata.get('features')[0].get('properties').get('NIVEAU')
-        return jsonify({'Addresse':adresse1, 'Alea': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA, 'Niveau_Alea':NIV}), 200
+        return jsonify({'Address':adresse1,'Alea':ALEA,'Niveau_Alea':NIV, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA}), 200
     else:
         response = {
             'Addresse': adresse1,
             'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Non"
         }
-        return jsonify({'Addresse':adresse1, 'Alea': "Exposition au retrait-gonflement des sols argileux : Non",'Niveau_Alea':NIV}), 200
+        return jsonify({'Address':adresse1, 'Alea':"Non",'Niveau_Alea':0, "Exposition au retrait-gonflement des sols argileux : Non"}), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
