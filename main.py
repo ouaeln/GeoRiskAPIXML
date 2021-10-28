@@ -67,10 +67,6 @@ def get(addresse = 'searchedaddress'):
         NIV = returneddata.get('features')[0].get('properties').get('NIVEAU')
         return jsonify({'Address':adresse1,'Alea':ALEA,'Niveau_Alea':NIV, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA}), 200
     else:
-        response = {
-            'Addresse': adresse1,
-            'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Non"
-        }
         return jsonify({'Address':adresse1, 'Alea':"Non",'Niveau_Alea':0, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Non"}), 200
 
 if __name__ == "__main__":
