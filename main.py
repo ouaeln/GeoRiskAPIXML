@@ -5,6 +5,7 @@ from pyproj import Proj, transform
 
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 @app.route("/api/<string:addresse>", methods=['GET'])
 def get(addresse = 'searchedaddress'):
@@ -62,18 +63,13 @@ def get(addresse = 'searchedaddress'):
     returneddata= requests.post('http://64.225.65.140:8080/geoserver/wfs?outputFormat=application/json', data=xml).json()
     if len(returneddata.get('features')) > 0:
         ALEA = returneddata.get('features')[0].get('properties').get('ALEA')
-        response = {
-            'Addresse': adresse1,
-            'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA
-        }
-        return response
+        return jsonify({'Addresse':adresse1, 'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA}), 200
     else:
         response = {
             'Addresse': adresse1,
             'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Non"
         }
-        return response
+        return jsonify({'Addresse':adresse1, 'NiveauAlea': "Exposition au retrait-gonflement des sols argileux : Non"}), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
