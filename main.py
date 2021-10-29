@@ -7,6 +7,19 @@ from pyproj import Proj, transform
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
+def handle_error(e):
+    message = str(e)
+    code = 500
+    success = False
+    response = {
+        'success': success,
+        'error': {
+            'message': message
+        }
+    }
+    return jsonify(response), status_code
+
+
 @app.route("/api/<string:addresse>", methods=['GET'])
 def get(addresse = 'searchedaddress'):
     searchedaddress = addresse
@@ -19,6 +32,9 @@ def get(addresse = 'searchedaddress'):
     #GET SUGGESTED ADDRESSES
     responseforaddressapi = requests.get('https://api-adresse.data.gouv.fr/search/', params=dataforaddressapi)
     dictionary = responseforaddressapi.json()
+    if(len(dictionary.get('features')) <= 0):
+        return jsonify({ "success": False, "result": { "message":"No Data Found for This Adress "}}), 404
+
     adresse1 = dictionary.get('features')[0].get('properties').get('label')
 
     #CHOOSE FIRST SUGGESTION
@@ -61,11 +77,16 @@ def get(addresse = 'searchedaddress'):
         '''
 
     #GETTING RESPONSE FROM SERVER
-    returneddata= requests.post('http://64.225.65.140:8080/geoserver/wfs?outputFormat=application/json', data=xml).json()
+    
+    try:  
+        returneddata= requests.post('http://64.225.65.140:8080/geoserver/wfs?outputFormat=application/json', data=xml).json()
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        handle_error(e)
+
     if len(returneddata.get('features')) > 0:
         ALEA = returneddata.get('features')[0].get('properties').get('ALEA')
         NIV = returneddata.get('features')[0].get('properties').get('NIVEAU')
-        return jsonify({'Address':adresse1,'Alea':ALEA,'Niveau_Alea':NIV, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA}), 200
+        return jsonify({ "success": True, "results":{'Address':adresse1,'Alea':ALEA,'Niveau_Alea':NIV, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA} }), 200
     else:
         return jsonify({'Address':adresse1, 'Alea':"Non",'Niveau_Alea':0, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Non"}), 200
 
