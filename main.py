@@ -80,19 +80,19 @@ def get(addresse = 'searchedaddress'):
         '''
 
     #GETTING RESPONSE FROM SERVER
-    
+   
     try:  
         returneddata= requests.post(root_url+'/geoserver/wfs?outputFormat=application/json', data=xml).json()
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         handle_error(e)
-
+        
     if len(returneddata.get('features')) > 0:
         ALEA = returneddata.get('features')[0].get('properties').get('ALEA')
         NIV = returneddata.get('features')[0].get('properties').get('NIVEAU')
         return jsonify({ "success": True, "results":{'Address':adresse1,'Alea':ALEA,'Niveau_Alea':NIV, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Alea " + ALEA} }), 200
     else:
         return jsonify({'Address':adresse1, 'Alea':"Non",'Niveau_Alea':0, 'AleaLabel': "Exposition au retrait-gonflement des sols argileux : Non"}), 200
-
+#To run the app and make it accessible from all ip adresses 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
