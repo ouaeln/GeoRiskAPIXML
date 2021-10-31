@@ -7,6 +7,9 @@ from pyproj import Proj, transform
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
+#if not hosting in the same machine , please change root_url value to the correct url 
+root_url = 'http://localhost:8080'
+
 def handle_error(e):
     message = str(e)
     code = 500
@@ -79,7 +82,7 @@ def get(addresse = 'searchedaddress'):
     #GETTING RESPONSE FROM SERVER
     
     try:  
-        returneddata= requests.post('http://64.225.65.140:8080/geoserver/wfs?outputFormat=application/json', data=xml).json()
+        returneddata= requests.post(root_url+'/geoserver/wfs?outputFormat=application/json', data=xml).json()
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         handle_error(e)
 
@@ -92,3 +95,5 @@ def get(addresse = 'searchedaddress'):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
